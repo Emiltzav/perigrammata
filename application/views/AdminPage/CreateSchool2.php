@@ -20,7 +20,7 @@
                                 <?php
                                     if ($_SESSION['admin_id'] == 4) { // if super admin, the user can choose the institution of the school 
                                         echo "<select class='browser-default custom-select' name='institution'>";
-                                        echo "<option value=''></option>";
+                                        //echo "<option value=''></option>";
                                         foreach ($institution as $Id => $row ) {
                                             echo "<option value='" . $row['Id'] . "'>" . $row['InstitutionName'] . "</option>";
                                         }
@@ -41,7 +41,7 @@
                             <td colspan="4">
                                 <?php
                                     echo "<select class='browser-default custom-select' name='department'>";
-                                    echo "<option value=''></option>";
+                                    //echo "<option value=''></option>";
                                     foreach ($department as $Id => $row ) {
                                         echo "<option value='" . $row['Id'] . "'>" . $row['DepartmentName'] . "</option>";
                                     }
