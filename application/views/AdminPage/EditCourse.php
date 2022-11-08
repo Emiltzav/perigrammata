@@ -30,9 +30,9 @@
                             ?>
                         </td>
                     </tr>
-                    <tr>
+                    <tr>   
                         <th class="font-weight-bold myblue1 text-white">
-                            <?php echo t_department;?> 
+                            <?php echo t_curriculum;?> 
                         </th>
                         <td colspan="4">
                             <?php
