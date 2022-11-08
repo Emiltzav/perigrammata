@@ -7,9 +7,7 @@
                 <tr>
                     <th class="font-weight-bold th-sm">#</th>   
                     <th class="th-sm font-weight-bold"><?php echo t_Institution;?></th>
-                    <th class="th-sm font-weight-bold"><?php echo t_Institution_2;?></th>
-                    <th class="th-sm font-weight-bold"><?php echo t_School;?></th>
-                    <th class="th-sm font-weight-bold"><?php echo t_School_2;?></th>   
+                    <th class="th-sm font-weight-bold"><?php echo t_School;?></th> 
                     <th class="th-sm font-weight-bold"><?php echo t_curriculum0;?></th> 
                     <th class="th-sm font-weight-bold"><?php echo t_semester0;?></th>
                     <th class="th-sm font-weight-bold"><?php echo t_professor;?></th> 
@@ -32,11 +30,11 @@
                     $stmt = $conn->prepare("SELECT course_has_professor.ProfessorId, user.FirstName, user.LastName
                     FROM perigrammata_db.course_has_professor
                     INNER JOIN user ON user.Id = course_has_professor.ProfessorId
-                    WHERE CourseId = ?");
+                    WHERE CourseId = ?");  
                     $stmt->execute([$CourseId]); 
                     $CourseProfessorName = $stmt->fetchAll(); // get the mysqli result
-                    //$stmt->close();  
-
+                    //$stmt->close();    
+   
                     $stmt = $conn->prepare("SELECT *
                     FROM perigrammata_db.institution
                     WHERE Id = ?");  
@@ -47,7 +45,7 @@
                         $InstitutionName = $row1['InstitutionName'];
                     }
 
-                    if( !empty($SecondInstitutionId) && $SecondInstitutionId != 1 ) {
+                    if( !empty($SecondInstitutionId) && $SecondInstitutionId != 1 && $SecondInstitutionId != $InstitutionId ) {
                         $stmt = $conn->prepare("SELECT *
                         FROM perigrammata_db.institution
                         WHERE Id = ?");  
@@ -55,13 +53,13 @@
                         $institution2 = $stmt->fetchAll(); // get the mysqli result
 
                         foreach ($institution2 as $row3) {
-                            $InstitutionName2 = $row3['InstitutionName'];
+                            $InstitutionName2 = "- " . $row3['InstitutionName'];
                         }
                     } else {
-                        $InstitutionName2 = '-';
+                        $InstitutionName2 = '';
                     }
 
-                    $SecondSchoolName = '-';  
+                    $SecondSchoolName = '';  
 
                     if( !empty($SecondSchoolId) && $SecondSchoolId != 1 ) {     
                         $stmt = $conn->prepare("SELECT *
@@ -71,10 +69,10 @@
                         $secondSchool = $stmt->fetchAll(); // get the mysqli result
 
                         foreach ($secondSchool as $row4) {
-                            $SecondSchoolName = $row4['SchoolName'];
+                            $SecondSchoolName = "- " . $row4['SchoolName'];
                         }
                     } else {
-                        $SecondSchoolName = '-';
+                        $SecondSchoolName = '';
                     } 
 
                     $stmt = $conn->prepare("SELECT *
@@ -90,10 +88,10 @@
                     ?>
                     <tr class="p-0">  
                         <td><?php echo $i;?>  
-                        <td><?php echo "<option value='" . $row1['Id'] . "'>" . $InstitutionName . "</option>" ?> </td>
-                        <td><?php echo "<option value='" . $row1['Id'] . "'>" . $InstitutionName2 . "</option>" ?> </td>
-                        <td><?php echo "<option value='" . $row['Id'] . "'>" . $row['SchoolName'] . "</option>" ?> </td>
-                        <td><?php echo "<option value='" . $row1['Id'] . "'>" . $SecondSchoolName . "</option>" ?> </td> 
+                        <td><?php echo "<option value='" . $row1['Id'] . "'>" . $InstitutionName;  
+                        echo "<option value='" . $row1['Id'] . "'>" . $InstitutionName2 . "</option>" ?> </td>
+                        <td><?php echo "<option value='" . $row['Id'] . "'>" . $row['SchoolName']; 
+                        echo "<option value='" . $row1['Id'] . "'>" . $SecondSchoolName . "</option>" ?> </td>
                         <td><?php echo "<option value='" . $row2['Id'] . "'>" . $CourseDepartmentName . "</option>" ?> </td>
                         <td><?php echo "<option value='" . $row['Id'] . "'>" . $row['Semester'] . "</option>" ?> </td>
                         <td>
