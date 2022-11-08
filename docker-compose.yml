@@ -1,0 +1,51 @@
+version: "3.8"
+services:
+    www:
+        build: .
+        ports: 
+            - "80:80"
+        restart: always
+        volumes:
+            - .:/var/www/html/
+        expose:
+            - "80"
+        links:
+            - db    
+        networks:
+            app_subnet:
+                ipv4_address: 172.16.1.3
+    db:
+        container_name: db
+        image: mysql:5.7
+        expose:
+            - "3306"
+        ports:
+            - "3306:3306"
+        restart: always
+        environment:
+            - MYSQL_USER=perigrammata_db
+            - MYSQL_PASSWORD=@ad1p_c0urses_29_01_2020
+            - MYSQL_ROOT_PASSWORD=@ad1p_c0urses_29_01_2020
+            - MYSQL_DATABASE=perigrammata_db
+        volumes:
+            - ./db/:/docker-entrypoint-initdb.d
+            # - ./persistent:/var/lib/mysql 
+        networks:
+            app_subnet:   
+                ipv4_address: 172.16.1.4
+    phpmyadmin:
+        image: phpmyadmin/phpmyadmin
+        ports:
+            - "8000:80"
+        restart: always
+        environment:
+            PMA_ARBITRARY: 1 
+
+networks:
+    app_subnet: 
+        ipam:
+            config: 
+                - subnet: 172.16.1.0/24   
+volumes: 
+    persistent:  
+
