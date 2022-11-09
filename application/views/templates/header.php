@@ -75,15 +75,53 @@
                         <a class="nav-link" href="#">
                         <!-- <i class="far fa-user-circle"></i> -->
                         <?php if ($_SESSION['user_profile']==2){?>
-                        <img  src="<?php echo URL; ?>/public/img/prof.png" alt="Logo" height="50" width="20">
+                        <!-- <img  src="<?php echo URL; ?>/public/img/prof.png" alt="Logo" height="50" width="20"> -->
 
                         <?php }else if ($_SESSION['user_profile']==1){?>
-                            <img  src="<?php echo URL; ?>/public/img/admin.png" alt="Logo" height="50" width="20">
+                           <!-- <img  src="<?php echo URL; ?>/public/img/admin.png" alt="Logo" height="50" width="20"> -->
                         <?php }else{?>
-                            <img  src="<?php echo URL; ?>/public/img/stud.png" alt="Logo" height="50" width="20">
+                            <!--  <img  src="<?php echo URL; ?>/public/img/stud.png" alt="Logo" height="50" width="20"> -->
                         <?php }
+
+                        $db_username = 'perigrammata_db';
+                        $db_password = '@ad1p_c0urses_29_01_2020';
+                        $conn = new PDO('mysql:host=db;dbname=perigrammata_db;charset=utf8;port=3306', 
+                        $db_username, $db_password, array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET CHARACTER SET UTF8"));
+
+                        $stmt = $conn->prepare("SELECT * FROM admin WHERE UserId = ?");   
+                        $stmt->execute([$_SESSION['user_id']]);   
+                        $stmt->execute(); 
+                        $admin = $stmt->fetchAll(); // get the mysqli result
+
+                        $_SESSION['user_role_title'] = " ";
+
+                        foreach ($admin as $Id => $row ) {
+
+                            $admin_id = $row['AdminId'];
+
+                            // institution admin
+                            if($admin_id == 1) {   
+                                $_SESSION['user_role_title'] = " - Διαχειριστής Ιδρύματος";
+                            }
+
+                            // school admin
+                            else if($admin_id == 2) { 
+                                $_SESSION['user_role_title'] = " - Διαχειριστής Σχολής";
+                            }
+
+                            // syllabus admin
+                            else if($admin_id == 3) {  
+                                $_SESSION['user_role_title'] = " - Διαχειριστής Προγράμματος Σπουδών";
+                            }
+
+                            // super admin 
+                            else if($admin_id == 4) {   
+                                $_SESSION['user_role_title'] = " - Super Administrator";
+                            } 
+
+                        }
                         
-                        echo $_SESSION['user_username'] ?>
+                        echo $_SESSION['user_username']; echo $_SESSION['user_role_title']; ?>
                         <span class="sr-only">(current)</span>
                         </a>
                     </li>
