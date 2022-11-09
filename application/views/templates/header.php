@@ -183,6 +183,10 @@
                         echo t_delete_suc;
                     }else if  (isset($_SESSION['g_message']) && $_SESSION['g_message'] =='Successfully updated'){
                         echo t_update_suc;
+                    }else if (isset($_SESSION['g_message']) && $_SESSION['g_message'] =='New School added successfully.'){
+                        echo t_success_new_school;
+                    }else if (isset($_SESSION['g_message']) && $_SESSION['g_message'] =='The School updated successfully.'){
+                        echo t_success_update_school;
                     }
                         // unset( $_SESSION['g_message'] );
                         ?>

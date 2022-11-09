@@ -8,7 +8,6 @@
                     <th class="font-weight-bold th-sm">#</th>
                     <th class="th-sm font-weight-bold"><?php echo t_curriculum0;?></th>   
                     <th class="th-sm font-weight-bold"><?php echo t_Institution;?></th> 
-                    <th class="th-sm font-weight-bold"><?php echo t_Institution_2nd;?></th> 
                     <!--<th class="th-sm font-weight-bold"><?php //echo t_professor;?></th> -->
                     <th class="th-sm font-weight-bold"><?php echo t_delete;?></th>
                     <th class="th-sm font-weight-bold"><?php echo t_edit;?></th>
@@ -39,12 +38,12 @@
                         $institution2 = $stmt3->fetchAll(); // get the mysqli result   
                         
                         foreach ($institution2 as $Id => $row3){   
-                            $SecondInstitutionName = $row3["InstitutionName"];
+                            $SecondInstitutionName = "- " . $row3["InstitutionName"];
                         }
 
                     } else {
 
-                        $SecondInstitutionName = '-';
+                        $SecondInstitutionName = '';
 
                     }
 
@@ -52,8 +51,8 @@
                     <tr class="p-0">  
                         <td><?php echo $i;?>
                         <td><?php echo "<option value='" . $row['Id'] . "'>" . $row['DepartmentName'] . "</option>" ?> </td> 
-                        <td><?php echo "<option value='" . $row['Id'] . "'>" . $InstitutionName . "</option>" ?> </td>
-                        <td><?php echo "<option value='" . $row['Id'] . "'>" . $SecondInstitutionName . "</option>" ?> </td>
+                        <td><?php echo "<option value='" . $row['Id'] . "'>" . $InstitutionName;
+                        echo "<option value='" . $row['Id'] . "'>" . $SecondInstitutionName . "</option>" ?> </td>
                         <!--
                         <td>
                         <?php  /*

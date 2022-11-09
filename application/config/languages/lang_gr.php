@@ -15,7 +15,7 @@
 
     define("t_error_login1","Λάθος στοιχεία εισαγωγής χρήστη.");
     define("t_error_login2","Σφάλμα, το όνομα χρήστη ή το email είναι ήδη καταχωρημένα.");
-    define("t_error_login3","Η εγγραφή σας δεν έχει επιβεβαιωθεί ακόμα.");
+    define("t_error_login3","Η εγγραφή σας δεν έχει επιβεβαιωθεί ακόμα.");   
     define("t_error_course","Σφάλμα, αυτο το μάθημα δεν υπάρχει.");
     define("t_error_required_fields","Συμπληρώστε όλα τα πεδία.");
     define("t_error_on_save_course","Κάτι πήγε στραβά.");
@@ -28,6 +28,9 @@
     define("t_success","Επιτυχής Αποθήκευση!");
     define("t_success_new_course","Νέο μάθημα προστέθηκε επιτυχώς !");
     define("t_success_update_course","Τα στοιχεία του μαθήματος ανανεώθηκαν επιτυχώς !");
+
+    define("t_success_new_school","Τα στοιχεία της σχολής προστέθηκαν επιτυχώς !");
+    define("t_success_update_school","Τα στοιχεία της σχολής ανανεώθηκαν επιτυχώς !");
 
 //Index modal info    
     define("t_info0","Η διαδικτυακή εφαρμογή Περιγράμματα επιτρέπει στους καθηγητές: ");
@@ -153,10 +156,10 @@
     define("t_finish","Τελος");
     define("t_add","Προσθήκη");
     define("t_update","Ενημέρωση");
-    define("t_delete","Διαγραφή");                     
+    define("t_delete","Διαγραφη");                     
     define("t_delete_suc","Διαγράφηκε επιτυχώς");
     define("t_update_suc","Ανανεώθηκε επιτυχώς");
-    define("t_edit","Επεξεργασία");
+    define("t_edit","Επεξεργασια");
     define("t_submit","Υποβολή");    
     define("t_print","Εκτύπωση");
     define("t_html","Κώδικας HTML");
@@ -169,18 +172,22 @@
 // Mathisiaka apotelesmata  
     define("t_mycourses","Τα Μαθήματά μου");
     define("t_course","Μάθημα");  
-    define("t_course_description","ΠΕΡΙΓΡΑΜΜΑ ΜΑΘΗΜΑΤΟΣ");
-    define("t_institution_description","ΠΕΡΙΓΡΑΜΜΑ ΙΔΡΥΜΑΤΟΣ"); 
-    define("t_department_description","ΠΕΡΙΓΡΑΜΜΑ ΠΡΟΓΡΑΜΜΑΤΟΣ ΣΠΟΥΔΩΝ");    
-    define("t_school_description","ΠΕΡΙΓΡΑΜΜΑ ΣΧΟΛΗΣ");
-    define("t_syllabus_description","ΠΕΡΙΓΡΑΜΜΑ ΠΡΟΓΡΑΜΜΑΤΟΣ ΣΠΟΥΔΩΝ");
+    define("t_new_course_description","ΔΗΜΙΟΥΡΓΙΑ ΜΑΘΗΜΑΤΟΣ");
+    define("t_new_institution_description","ΔΗΜΙΟΥΡΓΙΑ ΙΔΡΥΜΑΤΟΣ");
+    define("t_new_school_description","ΔΗΜΙΟΥΡΓΙΑ ΣΧΟΛΗΣ");
+    define("t_new_department_description","ΔΗΜΙΟΥΡΓΙΑ ΠΡΟΓΡΑΜΜΑΤΩΝ ΣΠΟΥΔΩΝ");
+    define("t_course_description","ΕΠΕΞΕΡΓΑΣΙΑ ΜΑΘΗΜΑΤΟΣ");
+    define("t_institution_description","ΕΠΕΞΕΡΓΑΣΙΑ ΙΔΡΥΜΑΤΟΣ"); 
+    define("t_department_description","ΕΠΕΞΕΡΓΑΣΙΑ ΠΡΟΓΡΑΜΜΑΤΟΣ ΣΠΟΥΔΩΝ");    
+    define("t_school_description","ΕΠΕΞΕΡΓΑΣΙΑ ΣΧΟΛΗΣ");
+    define("t_syllabus_description","ΕΠΕΞΕΡΓΑΣΙΑ ΠΡΟΓΡΑΜΜΑΤΟΣ ΣΠΟΥΔΩΝ");
     define("t_general","(1) ΓΕΝΙΚΑ");
-    define("t_Institution","Ίδρυμα");  
+    define("t_Institution","Ίδρυμα");
     define("t_Institution_2","ΔΕΥΤΕΡΟ ΙΔΡΥΜΑ ΠΡΟΓΡΑΜΜΑΤΟΣ");
     define("t_Institution_2nd","ΔΕΥΤΕΡΟ ΙΔΡΥΜΑ");
     define("t_Institution_1","ΙΔΡΥΜΑ ΠΡΟΓΡΑΜΜΑΤΟΣ");
     define("t_institution","ΙΔΡΥΜΑ");
-    define("t_institution2","2o ΙΔΡΥΜΑ");
+    define("t_institution2","ΔΕΥΤΕΡΟ ΙΔΡΥΜΑ");
     define("t_School","Σχολή");
     define("t_School_2","2η Σχολή");
     define("t_school_multiple","ΣΧΟΛΗ/ΕΣ");

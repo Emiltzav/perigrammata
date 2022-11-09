@@ -199,6 +199,8 @@ class AdminController extends Controller{
 
         }  
 
+        $_SESSION['g_message'] = "Success ";
+
         // where to go after verb has been deleted
         header('location: ' . URL . 'AdminController/AllCourses');      
     }
@@ -978,17 +980,43 @@ class AdminController extends Controller{
             header('location: ' . URL . 'home');
         }
 
+        $db_username = 'perigrammata_db';
+        $db_password = '@ad1p_c0urses_29_01_2020';
+        $conn = new PDO('mysql:host=db;dbname=perigrammata_db;charset=utf8;port=3306', 
+        $db_username, $db_password, array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET CHARACTER SET UTF8"));
+
         $Course = $this->CourseModel->getCourse($_GET['CourseId']);
         $Language = $this->CourseModel->getTeachingLanguage();
         
         $school = $this->CourseModel->getSchool($Course['LangId']);
+        $second_school = $this->CourseModel->getSecondSchool($_GET['CourseId']);
         $department = $this->CourseModel->getDepartment($Course['LangId']);
         $LevelOfEducation = $this->CourseModel->getLevelOfEducation($Course['LangId']);
         $Professor = $this->CourseModel->getProfessor();
         $CourseProfessors= $this->CourseModel->getCourseProfessors($_GET['CourseId']);
         $courses = $this->CourseModel->getCourses();
         $RequiredCourses= $this->CourseModel->getRequiredCourses($_GET['CourseId']);
-        
+
+        $CourseId = $_GET['CourseId']; 
+
+        $stmt1 = $conn->prepare("SELECT InstitutionName FROM courses 
+        INNER JOIN institution ON institution.Id = courses.InstitutionId
+        WHERE courses.Id = ?");
+        $stmt1->execute([$CourseId]); 
+        $institution = $stmt1->fetchAll(); // get the mysqli result
+
+        $stmt2 = $conn->prepare("SELECT InstitutionName FROM courses 
+        INNER JOIN institution ON institution.Id = courses.SecondInstitutionId
+        WHERE courses.Id = ?");
+        $stmt2->execute([$CourseId]); 
+        $second_institution = $stmt2->fetchAll(); // get the mysqli result
+
+        if ($_SESSION['admin_id'] == 3) {
+            $stmt3 = $conn->prepare("SELECT * FROM department 
+            WHERE Id = ?");
+            $stmt3->execute([$_SESSION['managedSyllabusId']]); 
+            $my_department = $stmt3->fetchAll(); // get the mysqli result */
+        }
                 
         require APP . 'views/templates/header.php';
         require APP . 'views/AdminPage/EditCourse.php';
@@ -1096,10 +1124,10 @@ class AdminController extends Controller{
         $SyllabusId = $_GET['SyllabusId']; 
         $stmt = $conn->prepare("SELECT * FROM department WHERE Id = ?");
         $stmt->execute([$SyllabusId]); 
-        $school = $stmt->fetchAll(); // get the mysqli result
+        $department = $stmt->fetchAll(); // get the mysqli result
         //$stmt->close();
 
-        foreach($school as $row){
+        foreach($department as $row){
             $school_lang_id = $row['langId'];
             if($school_lang_id == 1) {   
                 $LanguageOfTeaching = 'Ελληνικά'; 
@@ -1109,6 +1137,10 @@ class AdminController extends Controller{
             //$department = $this->CourseModel->getDepartment($school_lang_id);
             $department_name = $row['DepartmentName'];  
             $InstitutionId = $row['InstitutionId'];
+            $SecondInstitutionId = 1;
+            if ( !empty($row['SecondInstitutionId']) ) {
+                $SecondInstitutionId = $row['SecondInstitutionId'];
+            }
         }
 
         $stmt = $conn->prepare("SELECT * FROM institution");
@@ -1275,6 +1307,7 @@ class AdminController extends Controller{
             $stmt->bindParam(':InstitutionId', $InstitutionId);
             $stmt->execute();
             //if( ! $stmt->rowCount() ) echo "Deletion failed";
+            $_SESSION['g_message'] = "Success ";
         }
         else
         {
@@ -1339,6 +1372,8 @@ class AdminController extends Controller{
         
         }
 
+        $_SESSION['g_message'] = "Success ";
+
         if ($_SESSION['admin_id'] != 4) { // if not super admin
             require APP . 'views/templates/header.php';
             require APP . 'views/AdminPage/MySchools.php';
@@ -1370,6 +1405,7 @@ class AdminController extends Controller{
             $stmt->bindParam(':SyllabusId', $SyllabusId);
             $stmt->execute();
             //if( ! $stmt->rowCount() ) echo "Deletion failed";
+            $_SESSION['g_message'] = "Success ";
         }
         else   
         {
@@ -1418,7 +1454,7 @@ class AdminController extends Controller{
         $langId_selected = $_POST['LanguageOfTeaching'];     
        
         //$school = $this->CourseModel->getSchool($langId_selected);
-        $department = $this->CourseModel->getDepartment($langId_selected);
+        //$department = $this->CourseModel->getDepartment($langId_selected);
         $LevelOfEducation = $this->CourseModel->getLevelOfEducation($langId_selected);
         //$Professor = $this->CourseModel->getProfessor();
 
@@ -1452,6 +1488,7 @@ class AdminController extends Controller{
                 ){
 
                 $this->CourseModel->CreateSchool($_POST["institution"], $_POST["SchoolTitle"], $_POST["langId"]);
+                $_SESSION['g_message'] = "Success ";
                     
             }else{
                 $_SESSION['g_message'] = 'Something went wrong!! Please try again.'; 
@@ -1516,6 +1553,7 @@ class AdminController extends Controller{
                 ){
                 
                 $this->CourseModel->CreateInstitution($_POST["InstitutionTitle"], $_POST["langId"]);
+                $_SESSION['g_message'] = "Success ";
                     
             }else{
                 $_SESSION['g_message'] = 'Something went wrong!! Please try again.'; 
@@ -1574,18 +1612,19 @@ class AdminController extends Controller{
             header('location: ' . URL . 'home');
         }
     
-        $_SESSION['g_message'] = '';           
+        $_SESSION['g_message'] = '';               
 
         if(isset($_POST['finish_creation']))      
         {  
             if (preg_match('/(\p{Greek}|[a-z]|[A-Z]|\s|\d|\&|\*)+/u', $_POST['DepartmentTitle'])
-                && !empty($_POST['DepartmentTitle']) && !empty($_POST['InstitutionId1']) && !empty($_POST['langId'])  
-                ){   
+                && !empty($_POST['DepartmentTitle']) && !empty($_POST['institution1']) && !empty($_POST['institution2']) && !empty($_POST['langId'])  
+                ){      
                              
-                $this->CourseModel->CreateDepartment($_POST["DepartmentTitle"], $_POST['InstitutionId1'], $_POST["langId"]);
+                $this->CourseModel->CreateDepartment($_POST["DepartmentTitle"], $_POST["langId"], $_POST['institution1'], $_POST['institution2']);
+                $_SESSION['g_message'] = "Success ";
                     
             }else{    
-                $_SESSION['g_message'] = 'Something went wrong!! Please try again.'; 
+                $_SESSION['g_message'] = 'Κάτι πήγε στραβά! Παρακαλούμε δοκιμάστε ξανά.'; 
 
             }
             /*
@@ -1711,25 +1750,18 @@ class AdminController extends Controller{
 
         } else if ($_SESSION['admin_id'] == 3) { // if syllabus admin             
 
-            $stmt = $conn->prepare("SELECT school.* FROM school_to_department 
-            INNER JOIN school ON school.Id = school_to_department.SchoolId
-            WHERE DepartmentId = ?");   
-            $stmt->execute([$_SESSION['managedSyllabusId']]);    
-            $school = $stmt->fetchAll(); // get the mysqli result
+            // get all schools (for 1st school)
+            $school = $this->CourseModel->getSchools(); 
 
             // get all schools (for 2nd school)
             $second_school = $this->CourseModel->getSchools(); 
 
-            /*
             $stmt1 = $conn->prepare("SELECT * FROM department 
             WHERE Id = ?");
-            $stmt1->execute([$_SESSION['managedSyllabusId']]);  
-            $department = $stmt1->fetchAll(); // get the mysqli result */
-            $stmt1 = $conn->prepare("SELECT * FROM department");
-            $stmt1->execute();
-            $department = $stmt1->fetchAll(); // get the mysqli result */
+            $stmt1->execute([$_SESSION['managedSyllabusId']]); 
+            $my_department = $stmt1->fetchAll(); // get the mysqli result */
 
-            foreach ($department as $Id => $row1) {
+            foreach ($my_department as $Id => $row1) {
                 $InstitutionId = $row1['InstitutionId'];
             }     
             
@@ -1741,6 +1773,10 @@ class AdminController extends Controller{
 
             // get all institutions
             $second_institution = $this->CourseModel->getInstitutions(); 
+
+            $stmt3 = $conn->prepare("SELECT * FROM department");
+            $stmt3->execute(); 
+            $department = $stmt3->fetchAll(); // get the mysqli result */
 
         } else if ($_SESSION['admin_id'] == 4) { // if super admin
 
@@ -1831,9 +1867,14 @@ class AdminController extends Controller{
                 ){
                     $_POST["ProfessorId"] = isset( $_POST["ProfessorId"] ) ? $_POST["ProfessorId"] : array();
                     $_POST["PrerequisiteId"] = isset( $_POST["PrerequisiteId"] ) ? $_POST["PrerequisiteId"] : array();
+                    $professor = ' ';
+                    if ( !empty($_POST["Professor"]) )
+                    {
+                        $professor = $_POST["Professor"];
+                    }
 
                 $this->CourseModel->UpdateCourse($_POST["school"],  $_POST["department"],  $_POST["LevelOfEducation"], 
-                    $_POST["LessonCode"],  $_POST["Semester"],  $_POST["CourseTitle"],  $_POST["Professor"],
+                    $_POST["LessonCode"],  $_POST["Semester"],  $_POST["CourseTitle"],  $professor,
                     $_POST["Lectures"],$_POST["Laboratories"],$_POST["Tutorials"], $_POST["LabTutorials"],$_POST["Total"],
                     $_POST["CreditUnits"], $_POST["Erasmus"],  $_POST["Content"], $_POST["ProfessorId"],
                     $_POST["PrerequisiteId"], $_POST["CourseId"]);
@@ -1870,6 +1911,7 @@ class AdminController extends Controller{
                 $sql = "UPDATE institution SET InstitutionName=? WHERE Id=?";
                 $stmt= $conn->prepare($sql);
                 $stmt->execute([$InstitutionName,$UpdateInstitutionId]);
+                $_SESSION['g_message'] = "Success ";
             }else{
                 $_SESSION['g_message'] = 'Something went wrong!! Please try again.'; 
             }
@@ -1904,48 +1946,7 @@ class AdminController extends Controller{
                 $stmt= $conn->prepare($sql);
                 $stmt->execute([$UpdateInstitutionId,$SchoolName,$SchoolId]); 
 
-                /*
-                if ( !empty($_POST['department']) )
-                {
-                    $DepartmentId = $_POST['department'];
-                    try {    
-                        // prepare sql and bind parameters
-                        $stmt2 = $conn->prepare("INSERT INTO `school_to_department` (SchoolId, DepartmentId) 
-                        VALUES (:SchoolId, :DepartmentId)");     
-                            
-                        $stmt2->bindParam(':SchoolId', $SchoolId);
-                        $stmt2->bindParam(':DepartmentId', $DepartmentId);  
-                    
-                        // insert a row   
-                        $stmt2->execute();  
-                        //$pdo->lastInsertId();
-                    } catch(PDOException $e) {
-                        $_SESSION['g_message'] = 'Something went wrong!! Please try again.';
-                        //echo "Error: " . $stmt2 . "<br>" . $conn->error;
-                    }
-                }*/
-
-                /*
-                if ( !empty($_POST['department2']) )
-                {
-                    $DepartmentId2 = $_POST['department2'];
-                    try {    
-  
-                        // prepare sql and bind parameters
-                        $stmt3 = $conn->prepare("INSERT INTO `school_to_department` (SchoolId, DepartmentId) 
-                        VALUES (:SchoolId, :DepartmentId2)");  
-                            
-                        $stmt3->bindParam(':SchoolId', $SchoolId);
-                        $stmt3->bindParam(':DepartmentId2', $DepartmentId2);  
-                    
-                        // insert a row   
-                        $stmt3->execute();  
-                        //$pdo->lastInsertId();
-                    } catch(PDOException $e) {
-                        echo "Error: " . $stmt3 . "<br>" . $conn->error;
-                    }
-                }*/
-
+                $_SESSION['g_message'] = "Success ";
             }else{
                 $_SESSION['g_message'] = 'Something went wrong!! Please try again.'; 
             }
@@ -1972,13 +1973,15 @@ class AdminController extends Controller{
             if (preg_match('/(\p{Greek}|[a-z]|[A-Z]|\s|\d|\&|\*)+/u', $_POST['SyllabusName']) && !empty($_POST['SyllabusId']) && !empty($_POST['institution']) )
             {
                 $UpdateInstitutionId = $_POST['institution']; 
+                $UpdateSecondInstitutionId = $_POST['institution2']; 
                 $SyllabusId = $_POST['SyllabusId'];   
                 $SyllabusName = $_POST['SyllabusName']; 
                 //$_POST["AdminId"] = isset( $_POST["AdminId"] ) ? $_POST["AdminId"] : array();
                 //$_POST["PrerequisiteId"] = isset( $_POST["PrerequisiteId"] ) ? $_POST["PrerequisiteId"] : array();
-                $sql = "UPDATE department SET InstitutionId=?, DepartmentName=? WHERE Id=?";
+                $sql = "UPDATE department SET InstitutionId=?, SecondInstitutionId=?, DepartmentName=? WHERE Id=?";
                 $stmt= $conn->prepare($sql);
-                $stmt->execute([$UpdateInstitutionId,$SyllabusName,$SyllabusId]);
+                $stmt->execute([$UpdateInstitutionId,$UpdateSecondInstitutionId,$SyllabusName,$SyllabusId]);
+                $_SESSION['g_message'] = "Success ";
             }else{
                 $_SESSION['g_message'] = 'Something went wrong!! Please try again.'; 
             }

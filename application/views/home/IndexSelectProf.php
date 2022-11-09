@@ -56,6 +56,7 @@
                     $managedSchoolId = $row['ManagedDepartmentId'];   
                     $_SESSION['managedSchoolId'] = $managedSchoolId; 
                     $_SESSION['admin_id'] = 2;  
+                    $_SESSION['user_role_title'] = "ΣΧΟΛΗΣ"; 
                 }
 
                 // syllabus admin

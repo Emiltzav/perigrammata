@@ -16,9 +16,9 @@ class Home extends Controller
         session_cache_limiter('none'); // works
         //session_cache_limiter('public'); // works too
         
-         if (isset($_SESSION['LAST_ACTIVITY']) && (time() - $_SESSION['LAST_ACTIVITY'] > 1800)) {
+         if (isset($_SESSION['LAST_ACTIVITY']) && (time() - $_SESSION['LAST_ACTIVITY'] > 3600)) {
 
-            if(!isset($_SESSION)) 
+            if(!isset($_SESSION))    
             { 
                 session_start(); 
             } 

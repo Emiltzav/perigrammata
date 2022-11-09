@@ -27,7 +27,7 @@
                         <td colspan="4" width="60%">  
                             <?php
                                 if ($_SESSION['admin_id'] == 4) { // if super admin, the user can choose the institution of the school 
-                                    echo "<select class='browser-default custom-select' name='InstitutionId1'>";
+                                    echo "<select class='browser-default custom-select' name='institution1'>";
                                     //echo "<option value=''></option>";
                                     foreach ($institution as $Id => $row ) {
                                         echo "<option value='" . $row['Id'] . "'>" . $row['InstitutionName'] . "</option>";
@@ -36,7 +36,7 @@
                                 } else { // if super admin, the institution of the school is read-only
                                     foreach ($institution as $Id => $row ) {
                                         echo "<input class='form-control form-control-sm' name='institution_title' value='". $row['InstitutionName'] ."' readonly/>";
-                                        echo "<input type='hidden' class='form-control form-control-sm' name='institution' value='". $row['Id'] ."' readonly/>";                               
+                                        echo "<input type='hidden' class='form-control form-control-sm' name='institution1' value='". $row['Id'] ."' readonly/>";                               
                                     }
                                 }
                             ?>     
@@ -57,7 +57,7 @@
                                     echo "</select>";
                                 } else { // if super admin, the institution of the school is read-only
                                     foreach ($institution as $Id => $row ) {
-                                        echo "<input class='form-control form-control-sm' name='institution2' value='". $row['InstitutionName'] ."' readonly/>";
+                                        echo "<input class='form-control form-control-sm' name='institution_title_2' value='". $row['InstitutionName'] ."' readonly/>";
                                         echo "<input type='hidden' class='form-control form-control-sm' name='institution2' value='". $row['Id'] ."' readonly/>";                               
                                     }
                                 }

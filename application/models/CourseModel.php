@@ -710,7 +710,7 @@ class Course
     }
          
     
-    public function CreateDepartment($DepartmentTitle, $langId, $InstitutionId)    
+    public function CreateDepartment($DepartmentTitle, $langId, $InstitutionId, $SecondInstitutionId)    
     {                 
 
         $_SESSION['g_message'] = '';
@@ -724,12 +724,13 @@ class Course
             $db_username, $db_password, array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET CHARACTER SET UTF8"));
 
             // prepare sql and bind parameters   
-            $stmt = $conn->prepare("INSERT INTO `department` (DepartmentName, langId, InstitutionId) 
-            VALUES (:DepartmentName, :langId, :InstitutionId)");              
+            $stmt = $conn->prepare("INSERT INTO `department` (DepartmentName, langId, InstitutionId, SecondInstitutionId) 
+            VALUES (:DepartmentName, :langId, :InstitutionId, :SecondInstitutionId)");              
                   
             $stmt->bindParam(':DepartmentName', $DepartmentTitle);
             $stmt->bindParam(':langId', $langId);   
-            $stmt->bindParam(':InstitutionId', $InstitutionId);        
+            $stmt->bindParam(':InstitutionId', $InstitutionId);  
+            $stmt->bindParam(':SecondInstitutionId', $SecondInstitutionId);        
          
             // insert a row       
             $stmt->execute();  

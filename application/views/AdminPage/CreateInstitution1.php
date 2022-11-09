@@ -2,7 +2,7 @@
     <div class="container">   
         <div id="create_course">
             <form method="POST" action="<?php echo URL; ?>AdminController/CreateInstitution2" name="professorform">
-                <h4 class="text-center font-weight-bold"> <?php echo t_institution_description;?> </br> </h4>
+                <h4 class="text-center font-weight-bold"> <?php echo t_new_institution_description;?> </br> </h4>
 
                 <div class="table-wrapper table-responsive py-3" >                            
                     <table class="table table-bordered ">
