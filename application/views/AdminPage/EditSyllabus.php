@@ -13,7 +13,7 @@
                     </td>
                     <tr>   
                         <th class="font-weight-bold myblue1 text-white" width="40%">
-                            <?php echo t_Institution;?> 
+                            <?php echo t_Institution_1;?> 
                         </th>
                         <td colspan="4" width="60%">
                             <?php
@@ -28,8 +28,28 @@
                                 }
                                 echo "</select>";
                             ?>
+                        </td>  
+                    </tr> 
+                    <tr>   
+                        <th class="font-weight-bold myblue1 text-white" width="40%">
+                            <?php echo t_Institution_2nd . " (ΑΝ ΥΠΑΡΧΕΙ)";?> 
+                        </th>
+                        <td colspan="4" width="60%">
+                            <?php
+                                echo "<select class='browser-default custom-select' name='institution2'>";
+                                echo "<option value='1'>-</option>";
+                                foreach ($institution as $Id => $row2 ) {
+                                    $selected= '';
+                                    if($row2['Id'] == $SecondInstitutionId)
+                                    {
+                                        $selected = 'selected';
+                                    }
+                                    echo "<option value='" . $row2['Id'] . "' " . $selected . ">" . $row2['InstitutionName'] . "</option>";
+                                }
+                                echo "</select>";
+                            ?>
                         </td>
-                    </tr>   
+                    </tr>  
                     <tr>   
                         <th class="font-weight-bold myblue1 text-white">
                             <?php echo t_syllabus_title0;?>

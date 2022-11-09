@@ -329,6 +329,20 @@ class Course
         return $schools;
     }
 
+    public function getSecondSchool($courseId)
+    {
+        $db_username = 'perigrammata_db';
+        $db_password = '@ad1p_c0urses_29_01_2020';
+        $conn = new PDO('mysql:host=db;dbname=perigrammata_db;charset=utf8;port=3306', 
+        $db_username, $db_password, array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET CHARACTER SET UTF8"));
+
+        $stmt = $conn->prepare("SELECT SecondSchoolId FROM courses
+        WHERE id = ?");
+        $stmt->execute([$courseId]); 
+        $second_school = $stmt->fetchAll(); // get the mysqli result
+        return $second_school;
+    }
+
     public function getSemesterCourses($semesterId,$schoolId)
     {  
         $db_username = 'perigrammata_db';
@@ -673,6 +687,7 @@ class Course
             // insert a row   
             $stmt->execute();
             //$pdo->lastInsertId();
+            $_SESSION['g_message'] = "Success ";
         } catch(PDOException $e) {
             echo "Error: " . $stmt . "<br>" . $conn->error;
         }
@@ -928,7 +943,7 @@ class Course
                 }
                                                      
             }catch (Exception $e) {
-                    echo 'Caught exception: ',  $e->getMessage(), "\n";
+                 //   echo 'Caught exception: ',  $e->getMessage(), "\n";
             } 
             $_SESSION['g_message'] = "The Course updated successfully.";
 
