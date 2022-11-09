@@ -175,9 +175,9 @@
     define("t_school_description","ΠΕΡΙΓΡΑΜΜΑ ΣΧΟΛΗΣ");
     define("t_syllabus_description","ΠΕΡΙΓΡΑΜΜΑ ΠΡΟΓΡΑΜΜΑΤΟΣ ΣΠΟΥΔΩΝ");
     define("t_general","(1) ΓΕΝΙΚΑ");
-    define("t_Institution","Ίδρυμα");
-    define("t_Institution_2","2ο Ίδρυμα");
-    define("t_Institution_2nd","Δεύτερο Ίδρυμα");
+    define("t_Institution","Ίδρυμα");  
+    define("t_Institution_2","ΔΕΥΤΕΡΟ ΙΔΡΥΜΑ ΠΡΟΓΡΑΜΜΑΤΟΣ");
+    define("t_Institution_2nd","ΔΕΥΤΕΡΟ ΙΔΡΥΜΑ");
     define("t_Institution_1","ΙΔΡΥΜΑ ΠΡΟΓΡΑΜΜΑΤΟΣ");
     define("t_institution","ΙΔΡΥΜΑ");
     define("t_institution2","2o ΙΔΡΥΜΑ");
