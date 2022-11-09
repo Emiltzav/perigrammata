@@ -36,16 +36,25 @@
                         </th>
                         <td colspan="4">
                             <?php
-                                echo "<select class='browser-default custom-select' name='department'>";
-                                foreach ($department as $Id => $row ) {
-                                    $selected= '';
-                                    if($row['Id'] == $Course['DepartmentId'])
-                                    {
-                                        $selected = 'selected';
+                                if ($_SESSION['admin_id'] != 3) {
+                                    echo "<select class='browser-default custom-select' name='department'>";
+                                    foreach ($department as $Id => $row ) {
+                                        $selected= '';
+                                        if($row['Id'] == $Course['DepartmentId'])
+                                        {
+                                            $selected = 'selected';
+                                        }
+                                        echo "<option value='" . $row['Id'] . "' " . $selected . ">" . $row['DepartmentName'] . "</option>";
                                     }
-                                    echo "<option value='" . $row['Id'] . "' " . $selected . ">" . $row['DepartmentName'] . "</option>";
+                                    echo "</select>";
+                                } else {
+                                    foreach ($my_department as $Id => $my_department_row ) {
+                                    ?>
+                                        <input class="form-control form-control-sm " name='DepartmentName' value="<?php echo $my_department_row['DepartmentName'];?>" readonly />
+                                        <input type='hidden' name='department' value="<?php echo $my_department_row['Id']; ?>" />
+                                    <?php   
+                                    } 
                                 }
-                                echo "</select>";
                             ?>
                         </td>
                     </tr>
@@ -223,7 +232,7 @@
                                         echo '<input  type="hidden" name="PrerequisiteId[]" id="prid_'.$selected_index.'" value="'.$PrerequisiteId.'" />';
                                         echo '<button type="button" name="remove" id="prbutton_'.$selected_index.'" class="btn btn-sm js-table-row-remove" onclick="removePrerequisites('.$selected_index.')">-</button>';
                                     }
-                                ?>
+                                ?>  
                             </div>
                         </td>
                     </tr>
