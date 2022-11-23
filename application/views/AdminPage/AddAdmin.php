@@ -11,7 +11,29 @@
         <input  class="form-control mb-4 w-100 border" type="text" name="UserName" placeholder="<?php echo t_username; ?>" required />
 
         <select class="browser-default custom-select mb-4" name = "ProfileId">
-            <option value = "" > <?php echo t_select_profile; ?></option>
+            <option value = "" disabled> <?php echo t_select_profile; ?></option>
+            <option value = "1"> <?php echo t_admin_1; ?></option>
+            <option value = "2"> <?php echo t_professor_1; ?></option>
+            <option value = "3"> <?php echo t_professor_admin; ?></option>
+        </select>
+        
+
+        <select style="display:none;" class="browser-default custom-select mb-4" name = "ProfileId">
+            <option value = "" disabled> <?php echo t_select_institution; ?></option>
+            <option value = "1"> <?php echo t_admin; ?></option>
+            <option value = "2"> <?php echo t_professor; ?></option>
+            <option value = "3"> <?php echo t_professor_admin; ?></option>
+        </select>
+
+        <select style="display:none;" class="browser-default custom-select mb-4" name = "ProfileId">
+            <option value = "" disabled> <?php echo t_select_school; ?></option>
+            <option value = "1"> <?php echo t_admin; ?></option>
+            <option value = "2"> <?php echo t_professor; ?></option>
+            <option value = "3"> <?php echo t_professor_admin; ?></option>
+        </select>
+
+        <select style="display:none;" class="browser-default custom-select mb-4" name = "ProfileId">
+            <option value = "" disabled> <?php echo t_select_syllabus; ?></option>
             <option value = "1"> <?php echo t_admin; ?></option>
             <option value = "2"> <?php echo t_professor; ?></option>
             <option value = "3"> <?php echo t_professor_admin; ?></option>

@@ -143,8 +143,13 @@
     define("t_username","Όνομα Χρήστη");
     define("t_password","Κωδικός");
     define("t_select_profile","Επιλογή Προφίλ");
+    define("t_select_institution","Επιλογή Ιδρύματος");
+    define("t_select_school","Επιλογή Σχολής");
+    define("t_select_syllabus","Επιλογή Προγράμματος Σπουδών");
     define("t_professor","Καθηγητης");
+    define("t_professor_1","Καθηγητής");
     define("t_admin","Διαχειριστης");
+    define("t_admin_1","Διαχειριστής");
     define("t_professor_admin","Καθηγητής/Διαχειριστής");
  
 // IndexProfessor buttons
