@@ -234,7 +234,7 @@
                                     }
                                 ?>  
                             </div>
-                        </td>
+                        </td>         
                     </tr>
                     <tr>
                         <th class="font-weight-bold myblue1 text-white">
