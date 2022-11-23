@@ -12,7 +12,7 @@ class AccountController extends Controller
 {
     public function register()
     {
-        $_SESSION['g_message'] = '';
+        $_SESSION['g_message'] = '';   
         
         if (isset($_POST["register"]) AND $_POST["register"] == "Register") {
             
