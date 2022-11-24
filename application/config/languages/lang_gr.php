@@ -45,14 +45,14 @@
 
 
     define("t_total_score","Συνολικό ποσοστό : ");
-    
+        
   
 //Administrator    
     define("t_create_course","Δημιουργια Μαθηματος");
     define("t_create_department","Δημιουργια Προγραμματος Σπουδων");
     define("t_create_institution","Δημιουργια Ιδρυματος");  
     define("t_create_school","Δημιουργια Σχολης");   
-    define("t_add_admin","Προσθηκη Χρηστη/Διαχειριστη");
+    define("t_add_admin","Προσθήκη Χρήστη/Διαχειριστή");
     define("t_add_verb","Προσθηκη Ρηματων");
     define("t_institutions_list","Καταλογος Ιδρυματων");
     define("t_schools_list","Καταλογος Σχολων");
@@ -150,6 +150,10 @@
     define("t_professor_1","Καθηγητής");
     define("t_admin","Διαχειριστης");
     define("t_admin_1","Διαχειριστής");
+    define("t_super_admin","Super Διαχειριστής");
+    define("t_admin_institution","Διαχειριστής Ιδρύματος");
+    define("t_admin_school","Διαχειριστής Σχολής");
+    define("t_admin_syllabus","Διαχειριστής Προγράμματος Σπουδών");
     define("t_professor_admin","Καθηγητής/Διαχειριστής");
  
 // IndexProfessor buttons
