@@ -12,12 +12,12 @@
 
         <select id="roleSelection" class="browser-default custom-select mb-4" name = "ProfileId" onchange="roleSelected()">
             <option value = "" disabled> <?php echo t_select_profile; ?></option>
-            <option value = "a"> <?php echo t_admin_1; ?></option>
-            <option value = "b"> <?php echo t_professor_1; ?></option>
-            <option value = "c"> <?php echo t_professor_admin; ?></option>
-        </select>   
+            <option value = "1"> <?php echo t_admin_1; ?></option>
+            <option value = "2"> <?php echo t_professor_1; ?></option>
+            <option value = "3"> <?php echo t_professor_admin; ?></option>
+        </select>     
         
-        <select id="adminRoleSelection" class="browser-default custom-select mb-4" name = "ProfileId" onchange="adminSelected()">
+        <select id="adminRoleSelection" class="browser-default custom-select mb-4" name = "AdminProfileId" onchange="adminSelected()">
             <option value = "" disabled> <?php echo t_select_profile; ?></option>
             <option value = "1"> <?php echo t_admin_institution; ?></option>
             <option value = "2"> <?php echo t_admin_school; ?></option>
@@ -59,11 +59,14 @@
         <script>
         function roleSelected() {    
             var roleSelected = document.getElementById("roleSelection").value;
-            if(roleSelected == "a" || roleSelected == "c") {
+            if(roleSelected == "1" || roleSelected == "3") {
                 document.getElementById("adminRoleSelection").style.display = "block";
             }  
-            else {
+            else {   
                 document.getElementById("adminRoleSelection").style.display = "none";
+                document.getElementById("ChooseSchool").style.display = "none";
+                document.getElementById("ChooseInstitution").style.display = "none";
+                document.getElementById("ChooseSyllabus").style.display = "none";  
             }
             //document.getElementById("demo").innerHTML = "You selected: " + x;
         }
