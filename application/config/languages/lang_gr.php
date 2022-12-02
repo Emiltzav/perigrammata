@@ -53,6 +53,7 @@
     define("t_create_institution","Δημιουργια Ιδρυματος");  
     define("t_create_school","Δημιουργια Σχολης");   
     define("t_add_admin","Προσθήκη Χρήστη/Διαχειριστή");
+    define("t_update_admin","Ενημέρωση Χρήστη/Διαχειριστή");
     define("t_add_verb","Προσθηκη Ρηματων");
     define("t_institutions_list","Καταλογος Ιδρυματων");
     define("t_schools_list","Καταλογος Σχολων");
@@ -164,7 +165,7 @@
     define("t_previous","Προηγουμενο");
     define("t_finish","Τελος");
     define("t_add","Προσθήκη");
-    define("t_update","Ενημέρωση");
+    define("t_update","Ενημερωση");
     define("t_delete","Διαγραφη");                     
     define("t_delete_suc","Διαγράφηκε επιτυχώς");
     define("t_update_suc","Ανανεώθηκε επιτυχώς");
@@ -204,7 +205,8 @@
     define("t_second_school", "ΔΕΥΤΕΡΗ ΣΧΟΛΗ");
     define("t_department","ΤΜΗΜΑ "); 
     define("t_curriculum0","Πρόγραμμα Σπουδών");  
-    define("t_curriculum","ΠΡΟΓΡΑΜΜΑ ΣΠΟΥΔΩΝ");
+    define("t_curriculum","ΠΡΟΓΡΑΜΜΑ ΣΠΟΥΔΩΝ");   
+    define("t_curriculum2","ΔΕΥΤΕΡΟ ΠΡΟΓΡΑΜΜΑ ΣΠΟΥΔΩΝ");
     define("t_level","ΕΠΙΠΕΔΟ ΣΠΟΥΔΩΝ");
     define("t_level1","Προπτυχιακό");
     define("t_level2","Μεταπτυχιακό");  
