@@ -7,6 +7,26 @@ class AdminController extends Controller{
         if( !isset( $_SESSION['logged'] ) || $_SESSION['user_profile'] != 3 ){ // if not logged in or not an admin
             header('location: ' . URL . 'home');
         }
+
+        $db_username = 'perigrammata_db';
+        $db_password = '@ad1p_c0urses_29_01_2020';
+        $conn = new PDO('mysql:host=db;dbname=perigrammata_db;charset=utf8;port=3306', 
+        $db_username, $db_password, array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET CHARACTER SET UTF8"));
+
+        $stmt = $conn->prepare("SELECT *  
+        FROM perigrammata_db.institution");
+        $stmt->execute(); 
+        $institutions = $stmt->fetchAll(); // get the mysqli result
+
+        $stmt = $conn->prepare("SELECT *
+        FROM perigrammata_db.school");
+        $stmt->execute(); 
+        $schools = $stmt->fetchAll(); // get the mysqli result
+
+        $stmt = $conn->prepare("SELECT *
+        FROM perigrammata_db.department");
+        $stmt->execute(); 
+        $departments = $stmt->fetchAll(); // get the mysqli result
   
         // load views
         require APP . 'views/templates/header.php';
@@ -205,19 +225,47 @@ class AdminController extends Controller{
         header('location: ' . URL . 'AdminController/AllCourses');      
     }
 
-    public function deleteUser()
+    public function deleteUser()    
     {   
         if( !isset( $_SESSION['logged'] ) || $_SESSION['user_profile'] != 3 ){ // if not logged in or not an admin
             header('location: ' . URL . 'home');
         }
 
-        $UserId_selected = $_GET['UserId'];
+        $db_username = 'perigrammata_db';
+        $db_password = '@ad1p_c0urses_29_01_2020';
+        $conn = new PDO('mysql:host=db;dbname=perigrammata_db;charset=utf8;port=3306', 
+        $db_username, $db_password, array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET CHARACTER SET UTF8"));
+
+        $UserId_selected = $_GET['UserId'];  
        
-        if (isset($UserId_selected)) {
-            // do deleteVerb() in models/CourseModel.php
+        if (isset($UserId_selected)) {   
+
+            // check if the user is also an admin
+            $stmt = $conn->prepare("SELECT Id FROM admin WHERE UserId = ?");
+            $stmt->execute([$UserId_selected]); 
+            $checkIfAdmin = $stmt->fetchAll(); // get the mysqli result
+
+            // if admin, delete user from admin table   
+            if( $stmt->rowCount() ) { 
+
+                foreach ($checkIfAdmin as $Id => $row ) {
+                    $IsAdmin = $row['Id']; 
+                }
+    
+                if($IsAdmin) {   
+                    $stmt = $conn->prepare( "DELETE FROM admin WHERE UserId =:UserId_selected" );
+                    $stmt->bindParam(':UserId_selected', $UserId_selected);
+                    $stmt->execute();
+                    //if( ! $stmt->rowCount() ) echo "Deletion failed";
+                }
+                
+            }
+            
+            // delete user from user table
             $this->CourseModel->deleteUser($UserId_selected);
+            $_SESSION['g_message'] = "Success ";
         }
-        // where to go after verb has been deleted
+        // where to go after user has been deleted
         header('location: ' . URL . 'AdminController/UserRequests');      
     }
 
@@ -435,11 +483,20 @@ class AdminController extends Controller{
         $db_password = '@ad1p_c0urses_29_01_2020';
         $conn = new PDO('mysql:host=db;dbname=perigrammata_db;charset=utf8;port=3306', 
         $db_username, $db_password, array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET CHARACTER SET UTF8"));
-
+        /*
         $stmt = $conn->prepare("SELECT *
         FROM perigrammata_db.institution");
         $stmt->execute(); 
-        $institutions = $stmt->fetchAll(); // get the mysqli result
+        $institutions = $stmt->fetchAll(); // get the mysqli result */
+        //foreach ($institutions as $Id => $row){ 
+
+        //$InstitutionId = $row['Id'];
+        //$InstitutionName = $row['InstitutionName'];
+
+        $stmt1 = $conn->prepare("SELECT *
+        FROM perigrammata_db.school");
+        $stmt1->execute(); 
+        $schools = $stmt1->fetchAll(); // get the mysqli result
 
         // load views
         require APP . 'views/templates/header.php';
@@ -833,7 +890,7 @@ class AdminController extends Controller{
             // }
 
             for($i=0;$i<count($abetTotal);$i++){
-                if (+$abetTotal[$i]>1){
+                if (+$abetTotal[$i]>1){  
                     $flag = 1;
                 }
             }
@@ -989,8 +1046,30 @@ class AdminController extends Controller{
         $Language = $this->CourseModel->getTeachingLanguage();
         
         $school = $this->CourseModel->getSchool($Course['LangId']);
-        $second_school = $this->CourseModel->getSecondSchool($_GET['CourseId']);
-        $department = $this->CourseModel->getDepartment($Course['LangId']);
+        $CourseInstitutions = $this->CourseModel->getCourseInstitutions($_GET['CourseId']);
+        $CourseSchools = $this->CourseModel->getCourseSchools($_GET['CourseId']);
+        $CourseDepartments = $this->CourseModel->getCourseDepartments($_GET['CourseId']);
+
+        foreach ($CourseInstitutions as $Id => $row0 ) {
+            $InstitutionId = $row0["InstitutionId"];
+            $SecondInstitutionId = $row0["SecondInstitutionId"];
+        }
+
+        foreach ($CourseSchools as $Id => $row5 ) {
+            $SchoolId = $row5["SchoolId"];
+            $SecondSchoolId = $row5["SecondSchoolId"];
+        }
+
+        foreach ($CourseDepartments as $Id => $row6 ) {
+            $DepartmentId = $row6["DepartmentId"];
+            $SecondDepartmentId = $row6["SecondDepartmentId"];
+        }
+
+        $stmt9 = $conn->prepare("SELECT * FROM department");
+        $stmt9->execute(); 
+        $department = $stmt9->fetchAll(); // get the mysqli result */
+        //$department = $this->CourseModel->getDepartment($Course['LangId']);
+
         $LevelOfEducation = $this->CourseModel->getLevelOfEducation($Course['LangId']);
         $Professor = $this->CourseModel->getProfessor();
         $CourseProfessors= $this->CourseModel->getCourseProfessors($_GET['CourseId']);
@@ -999,24 +1078,16 @@ class AdminController extends Controller{
 
         $CourseId = $_GET['CourseId']; 
 
-        $stmt1 = $conn->prepare("SELECT InstitutionName FROM courses 
-        INNER JOIN institution ON institution.Id = courses.InstitutionId
-        WHERE courses.Id = ?");
-        $stmt1->execute([$CourseId]); 
-        $institution = $stmt1->fetchAll(); // get the mysqli result
-
-        $stmt2 = $conn->prepare("SELECT InstitutionName FROM courses 
-        INNER JOIN institution ON institution.Id = courses.SecondInstitutionId
-        WHERE courses.Id = ?");
-        $stmt2->execute([$CourseId]); 
-        $second_institution = $stmt2->fetchAll(); // get the mysqli result
-
         if ($_SESSION['admin_id'] == 3) {
             $stmt3 = $conn->prepare("SELECT * FROM department 
             WHERE Id = ?");
             $stmt3->execute([$_SESSION['managedSyllabusId']]); 
             $my_department = $stmt3->fetchAll(); // get the mysqli result */
         }
+
+        $stmt4 = $conn->prepare("SELECT * FROM institution");  
+        $stmt4->execute(); 
+        $institution = $stmt4->fetchAll(); // get the mysqli result
                 
         require APP . 'views/templates/header.php';
         require APP . 'views/AdminPage/EditCourse.php';
@@ -1061,7 +1132,7 @@ class AdminController extends Controller{
         require APP . 'views/AdminPage/EditInstitution.php';
         require APP . 'views/templates/footer.php';
     
-    }  
+    }    
 
     public function editSchool()     
     {
@@ -1149,6 +1220,51 @@ class AdminController extends Controller{
              
         require APP . 'views/templates/header.php';
         require APP . 'views/AdminPage/EditSyllabus.php';
+        require APP . 'views/templates/footer.php';
+    
+    }
+
+    public function editUser()     
+    {
+        if( !isset( $_SESSION['logged'] ) || $_SESSION['user_profile'] != 3 ){ // if not logged in or not an admin
+            header('location: ' . URL . 'home');
+        }
+
+        $db_username = 'perigrammata_db';
+        $db_password = '@ad1p_c0urses_29_01_2020';
+        $conn = new PDO('mysql:host=db;dbname=perigrammata_db;charset=utf8;port=3306', 
+        $db_username, $db_password, array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET CHARACTER SET UTF8"));
+
+        $UserId = $_GET['UserId'];   
+        $stmt = $conn->prepare("SELECT * FROM user WHERE Id = ?");
+        $stmt->execute([$UserId]); 
+        $user = $stmt->fetchAll(); // get the mysqli result
+        //$stmt->close();
+    
+        foreach($user as $row){      
+            $firstName = $row['FirstName'];  
+            $lastName = $row['LastName'];
+            $userName = $row['UserName'];
+            $profileId = $row['ProfileId']; 
+        }    
+        
+        $stmt = $conn->prepare("SELECT *  
+        FROM perigrammata_db.institution");
+        $stmt->execute(); 
+        $institutions = $stmt->fetchAll(); // get the mysqli result
+
+        $stmt = $conn->prepare("SELECT *
+        FROM perigrammata_db.school");
+        $stmt->execute(); 
+        $schools = $stmt->fetchAll(); // get the mysqli result
+
+        $stmt = $conn->prepare("SELECT *
+        FROM perigrammata_db.department");
+        $stmt->execute(); 
+        $departments = $stmt->fetchAll(); // get the mysqli result
+             
+        require APP . 'views/templates/header.php';
+        require APP . 'views/AdminPage/EditUser.php';
         require APP . 'views/templates/footer.php';
     
     }
@@ -1692,7 +1808,7 @@ class AdminController extends Controller{
         if ($_SESSION['admin_id'] == 1) { // if institution admin
 
             // get specific syllabus of admin
-            $institution = $this->CourseModel->getInstitution($_SESSION['managedInstitutionId']); 
+            //$institution = $this->CourseModel->getInstitution($_SESSION['managedInstitutionId']); 
             // get all institutions
             $second_institution = $this->CourseModel->getInstitutions(); 
 
@@ -1700,6 +1816,11 @@ class AdminController extends Controller{
             WHERE InstitutionId = ?");
             $stmt->execute([$_SESSION['managedInstitutionId']]);    
             $school = $stmt->fetchAll(); // get the mysqli result
+
+            $stmt = $conn->prepare("SELECT * FROM institution 
+            WHERE Id = ?");
+            $stmt->execute([$_SESSION['managedInstitutionId']]);    
+            $institution = $stmt->fetchAll(); // get the mysqli result
 
             // get all schools (for 2nd school)
             $second_school = $this->CourseModel->getSchools(); 
@@ -1765,10 +1886,8 @@ class AdminController extends Controller{
                 $InstitutionId = $row1['InstitutionId'];
             }     
             
-            $stmt2 = $conn->prepare("SELECT * FROM institution 
-            INNER JOIN department ON department.InstitutionId = institution.Id
-            WHERE department.Id = ?");
-            $stmt2->execute([$_SESSION['managedSyllabusId']]);    
+            $stmt2 = $conn->prepare("SELECT * FROM institution");
+            $stmt2->execute();      
             $institution = $stmt2->fetchAll(); // get the mysqli result
 
             // get all institutions
@@ -1804,6 +1923,17 @@ class AdminController extends Controller{
         require APP . 'views/templates/footer.php';
     }
 
+    public function changeAdmin()
+    {
+        $AdminId = $_GET['AdminId'];  
+        $ManagedDepartmentId = $_GET['ManagedDepartmentId'];
+        $UserId = $_GET['UserId'];   
+        // load views
+        require APP . 'views/templates/header.php';
+        require APP . 'views/AdminPage/change_admin.php';
+        require APP . 'views/templates/footer.php';
+    }
+
     public function saveCourse()
     {
         if( !isset( $_SESSION['logged'] ) || $_SESSION['user_profile'] != 3 ){ // if not logged in or not an admin
@@ -1818,7 +1948,8 @@ class AdminController extends Controller{
                 && preg_match('/(\p{Greek}|[a-z]|[A-Z]|\s|\d|\&|\*)+/u', $_POST['CourseTitle'])
                 && !empty($_POST['school'])
                 && !empty($_POST['school2'])
-                && !empty($_POST['department'])   
+                && !empty($_POST['department'])  
+                && !empty($_POST['department2'])  
                 && !empty($_POST['LevelOfEducation'])
                 && !empty($_POST['LessonCode'])   
                 && !empty($_POST['Semester'])   
@@ -1830,11 +1961,11 @@ class AdminController extends Controller{
                     $_POST["ProfessorId"] = isset( $_POST["ProfessorId"] ) ? $_POST["ProfessorId"] : array();
                     $_POST["PrerequisiteId"] = isset( $_POST["PrerequisiteId"] ) ? $_POST["PrerequisiteId"] : array();
 
-                $this->CourseModel->CreateCourse($_POST["school"],  $_POST["department"],  $_POST["LevelOfEducation"], 
+                $this->CourseModel->CreateCourse($_POST["school"],  $_POST["department"], $_POST["LevelOfEducation"], 
                     $_POST["LessonCode"],  $_POST["Semester"],  $_POST["CourseTitle"],
                     $_POST["Lectures"],$_POST["Laboratories"],$_POST["Tutorials"],$_POST["LabTutorials"],$_POST["Total"],$_POST["CreditUnits"],  
                     $_POST["langId"],  $_POST["Erasmus"],  $_POST["Content"], $_POST["ProfessorId"], $_POST["PrerequisiteId"], 
-                    $_POST['InstitutionId'], $_POST['school2'], $_POST['InstitutionId2']);     
+                    $_POST['InstitutionId'], $_POST['school2'], $_POST['InstitutionId2'], $_POST["department2"]);     
                     
             }else{    
                 $_SESSION['g_message'] = 'Something went wrong!! Please try again.'; 
@@ -1858,6 +1989,7 @@ class AdminController extends Controller{
                 && preg_match('/(\p{Greek}|[a-z]|[A-Z]|\s|\d|\&|\*)+/u', $_POST['CourseTitle'])
                 && !empty($_POST['school'])
                 && !empty($_POST['department'])
+                && !empty($_POST['department2'])
                 && !empty($_POST['LevelOfEducation'])
                 && !empty($_POST['LessonCode'])
                 && !empty($_POST['Semester'])
@@ -1873,7 +2005,7 @@ class AdminController extends Controller{
                         $professor = $_POST["Professor"];
                     }
 
-                $this->CourseModel->UpdateCourse($_POST["school"],  $_POST["department"],  $_POST["LevelOfEducation"], 
+                $this->CourseModel->UpdateCourse($_POST["school"],  $_POST["department"], $_POST["department2"],  $_POST["LevelOfEducation"], 
                     $_POST["LessonCode"],  $_POST["Semester"],  $_POST["CourseTitle"],  $professor,
                     $_POST["Lectures"],$_POST["Laboratories"],$_POST["Tutorials"], $_POST["LabTutorials"],$_POST["Total"],
                     $_POST["CreditUnits"], $_POST["Erasmus"],  $_POST["Content"], $_POST["ProfessorId"],
@@ -1988,6 +2120,224 @@ class AdminController extends Controller{
             header('location: ' . URL . 'home');
             
         } 
+    }  
+
+    public function updateUser()   
+    {
+        if( !isset( $_SESSION['logged'] ) || $_SESSION['user_profile'] != 3 ){ // if not logged in or not an admin
+            header('location: ' . URL . 'home');
+        }
+
+        $db_username = 'perigrammata_db';
+        $db_password = '@ad1p_c0urses_29_01_2020';
+        $conn = new PDO('mysql:host=db;dbname=perigrammata_db;charset=utf8;port=3306', 
+        $db_username, $db_password, array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET CHARACTER SET UTF8"));
+
+        /*
+        if(isset($_POST['UpdateUser']))  
+        {  
+            
+            if (preg_match('/(\p{Greek}|[a-z]|[A-Z]|\s|\d|\&|\*)+/u', $_POST['SchoolName']) && !empty($_POST['SchoolId']) && !empty($_POST['institution']) )
+            {   
+                $UpdateInstitutionId = $_POST['institution']; 
+                $SchoolId = $_POST['SchoolId'];   
+                $SchoolName = $_POST['SchoolName']; 
+                //$_POST["AdminId"] = isset( $_POST["AdminId"] ) ? $_POST["AdminId"] : array();
+                //$_POST["PrerequisiteId"] = isset( $_POST["PrerequisiteId"] ) ? $_POST["PrerequisiteId"] : array();
+                $sql = "UPDATE school SET InstitutionId=?, SchoolName=? WHERE Id=?";
+                $stmt= $conn->prepare($sql);
+                $stmt->execute([$UpdateInstitutionId,$SchoolName,$SchoolId]); 
+
+                $_SESSION['g_message'] = "Success ";
+            }else{
+                $_SESSION['g_message'] = 'Something went wrong!! Please try again.'; 
+            }
+
+        }*/
+ 
+        
+        if (isset($_POST["UpdateUser"]) AND $_POST["UpdateUser"] == "UpdateUser") {
+
+            if (isset($_POST["AdminProfileId"]) AND $_POST["AdminProfileId"] == "1" && ($_POST['ProfileId'] == 1 || $_POST['ProfileId'] == 3) ) {
+
+                //Error handlers  
+                //Check if input characters are valid
+                if (preg_match('/^[\p{Greek}\s\d a-zA-Z]+$/u', $_POST['UserName'])
+                    && preg_match('/^[\p{Greek}\s\d a-zA-Z]+$/u', $_POST['FirstName'])
+                    && preg_match('/^[\p{Greek}\s\d a-zA-Z]+$/u', $_POST['LastName'])
+                    && !empty($_POST['ProfileId']) && !empty($_POST['AdminProfileId']) && !empty($_POST['Institution'])
+                    && !empty($_POST['UserId'])){
+
+                    $UserId = $_POST['UserId']; 
+                    
+                    $sql = "UPDATE user SET UserName=?, FirstName=?, LastName=?, ProfileId=? WHERE UserId=?";
+                    $stmt = $conn->prepare($sql);  
+                    $stmt->execute([$_POST['UserName'],$_POST['FirstName'],$_POST['LastName'],$_POST['ProfileId'],$UserId]);  
+
+                    // check if the user is already an admin
+                    $stmt1 = $conn->prepare("SELECT Id FROM admin WHERE UserId = ?");
+                    $stmt1->execute([$UserId]); 
+                    $checkIfAdmin = $stmt1->fetchAll(); // get the mysqli result
+
+                    // if admin, update user data in admin table   
+                    if( $stmt1->rowCount() ) { 
+
+                        foreach ($checkIfAdmin as $Id => $row ) {  
+                            $IsAdmin = $row['Id']; 
+                        }
+            
+                        if($IsAdmin) {   
+                            $sql2 = "UPDATE admin SET AdminId=?, ManagedDepartmentId=? WHERE UserId=?";
+                            $stmt2 = $conn->prepare($sql2);
+                            $stmt2->execute([$_POST['AdminProfileId'],$_POST['Institution'],$_POST['UserId']]); 
+                            $_SESSION['g_message'] = "Success ";
+                        }
+                        
+                    } else { // insert user in admin table 
+
+                        try {      
+                            // prepare sql and bind parameters
+                            $stmt2 = $conn->prepare("INSERT INTO `admin` (UserId, AdminId, ManagedDepartmentId) 
+                            VALUES (:UserId, :AdminId, :ManagedDepartmentId)");    
+                                  
+                            $stmt2->bindParam(':UserId', $UserId);   
+                            $stmt2->bindParam(':AdminId', $_POST['AdminProfileId']);  
+                            $stmt2->bindParam(':ManagedDepartmentId', $_POST['Institution']);      
+                         
+                            // insert a row   
+                            $stmt2->execute();
+                            $_SESSION['g_message'] = "Success ";
+                        } catch(PDOException $e) {
+                            $_SESSION['g_message'] = 'There is an error. Please try again  '; 
+                        } 
+
+                    }
+
+                } else {
+                    $_SESSION['g_message'] = 'There is an error. Please try again  '; 
+                }
+                header('location: ' . URL . 'home');      
+            
+            } else if (isset($_POST["AdminProfileId"]) AND $_POST["AdminProfileId"] == "2" && ($_POST['ProfileId'] == 1 || $_POST['ProfileId'] == 3)) {
+
+               //Error handlers  
+                //Check if input characters are valid
+                if (preg_match('/^[\p{Greek}\s\d a-zA-Z]+$/u', $_POST['UserName'])
+                    && preg_match('/^[\p{Greek}\s\d a-zA-Z]+$/u', $_POST['FirstName'])
+                    && preg_match('/^[\p{Greek}\s\d a-zA-Z]+$/u', $_POST['LastName'])
+                    && !empty($_POST['ProfileId']) && !empty($_POST['AdminProfileId']) && !empty($_POST['School'])
+                    && !empty($_POST['UserId'])){
+
+                    $UserId = $_POST['UserId'];    
+                    
+                    $sql = "UPDATE user SET UserName=?, FirstName=?, LastName=?, ProfileId=? WHERE UserId=?";
+                    $stmt = $conn->prepare($sql);  
+                    $stmt->execute([$_POST['UserName'],$_POST['FirstName'],$_POST['LastName'],$_POST['ProfileId'],$UserId]);  
+
+                    // check if the user is already an admin
+                    $stmt1 = $conn->prepare("SELECT Id FROM admin WHERE UserId = ?");
+                    $stmt1->execute([$UserId]); 
+                    $checkIfAdmin = $stmt1->fetchAll(); // get the mysqli result
+
+                    // if admin, update user data in admin table   
+                    if( $stmt1->rowCount() ) { 
+
+                        foreach ($checkIfAdmin as $Id => $row ) {  
+                            $IsAdmin = $row['Id']; 
+                        }
+            
+                        if($IsAdmin) {   
+                            $sql2 = "UPDATE admin SET AdminId=?, ManagedDepartmentId=? WHERE UserId=?";
+                            $stmt2 = $conn->prepare($sql2);
+                            $stmt2->execute([$_POST['AdminProfileId'],$_POST['School'],$_POST['UserId']]); 
+                            $_SESSION['g_message'] = "Success ";
+                        }
+                        
+                    } else { // insert user in admin table 
+
+                        try {      
+                            // prepare sql and bind parameters
+                            $stmt2 = $conn->prepare("INSERT INTO `admin` (UserId, AdminId, ManagedDepartmentId) 
+                            VALUES (:UserId, :AdminId, :ManagedDepartmentId)");    
+                                  
+                            $stmt2->bindParam(':UserId', $UserId);   
+                            $stmt2->bindParam(':AdminId', $_POST['AdminProfileId']);  
+                            $stmt2->bindParam(':ManagedDepartmentId', $_POST['School']);      
+                         
+                            // insert a row   
+                            $stmt2->execute();  
+                            $_SESSION['g_message'] = "Success ";
+                        } catch(PDOException $e) {
+                            $_SESSION['g_message'] = 'There is an error. Please try again  '; 
+                        } 
+
+                    }   
+
+                } else {
+                    $_SESSION['g_message'] = 'There is an error. Please try again  '; 
+                }
+                header('location: ' . URL . 'home');
+            
+            } else if (isset($_POST["AdminProfileId"]) AND $_POST["AdminProfileId"] == "3" && ($_POST['ProfileId'] == 1 || $_POST['ProfileId'] == 3)) {
+
+                //Error handlers  
+                //Check if input characters are valid
+                if (preg_match('/^[\p{Greek}\s\d a-zA-Z]+$/u', $_POST['UserName'])
+                    && preg_match('/^[\p{Greek}\s\d a-zA-Z]+$/u', $_POST['FirstName'])
+                    && preg_match('/^[\p{Greek}\s\d a-zA-Z]+$/u', $_POST['LastName'])
+                    && !empty($_POST['ProfileId']) && !empty($_POST['AdminProfileId']) && !empty($_POST['Department'])){
+                    
+                    
+                
+                } else {
+                    $_SESSION['g_message'] = 'There is an error. Please try again  '; 
+                }
+                header('location: ' . URL . 'home');      
+            
+            } else if (isset($_POST["AdminProfileId"]) AND $_POST["AdminProfileId"] == "4") {
+
+                //Error handlers  
+                //Check if input characters are valid
+                if (preg_match('/^[\p{Greek}\s\d a-zA-Z]+$/u', $_POST['UserName'])
+                    && preg_match('/^[\p{Greek}\s\d a-zA-Z]+$/u', $_POST['FirstName'])
+                    && preg_match('/^[\p{Greek}\s\d a-zA-Z]+$/u', $_POST['LastName'])   
+                    && !empty($_POST['ProfileId']) && !empty($_POST['AdminProfileId'])){
+                    
+                    
+                
+                } else {
+                    $_SESSION['g_message'] = 'There is an error. Please try again  '; 
+                }
+                header('location: ' . URL . 'home');         
+               
+            } else if (isset($_POST["ProfileId"]) && $_POST["ProfileId"] == "2" && !isset($_POST["AdminProfileId"])) {
+
+                //Error handlers   
+                //Check if input characters are valid
+                if (preg_match('/^[\p{Greek}\s\d a-zA-Z]+$/u', $_POST['UserName'])
+                    && preg_match('/^[\p{Greek}\s\d a-zA-Z]+$/u', $_POST['FirstName'])
+                    && preg_match('/^[\p{Greek}\s\d a-zA-Z]+$/u', $_POST['LastName'])
+                    && !empty($_POST['ProfileId'])){
+                    
+                    
+                    
+                } else {
+                    $_SESSION['g_message'] = 'There is an error. Please try again  '; 
+                }  
+                header('location: ' . URL . 'home');
+
+            }else{
+                $_SESSION['g_message'] = 'There is an error. Please try again  '; 
+                header('location: ' . URL . 'home');
+
+            }    
+
+        } else {
+            //$_SESSION['g_message'] = 'There is an error. Please try again  '; 
+            header('location: ' . URL . 'error1');
+        }
+            
+         
 
     }
 
