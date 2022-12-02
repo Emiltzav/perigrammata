@@ -10,27 +10,106 @@
  */
 class AccountController extends Controller
 {
-    public function register()
+    public function register()   
     {
-        $_SESSION['g_message'] = '';   
+        $_SESSION['g_message'] = '';    
         
         if (isset($_POST["register"]) AND $_POST["register"] == "Register") {
-            
-            //Error handlers
-            //Check if input characters are valid
-            if (preg_match('/^[\p{Greek}\s\d a-zA-Z]+$/u', $_POST['UserName'])
-                && preg_match('/^[\p{Greek}\s\d a-zA-Z]+$/u', $_POST['FirstName'])
-                && preg_match('/^[\p{Greek}\s\d a-zA-Z]+$/u', $_POST['LastName'])
-                && !empty($_POST['ProfileId'])){
-                
-                $this->UserModel->registerUser($_POST["FirstName"],  $_POST["LastName"],   
-                    $_POST["UserName"], $_POST["ProfileId"]);
-                
-            }
-            header('location: ' . URL . 'home');
-        }else{
-            $_SESSION['g_message'] = 'There is an error. Please try again  '; 
 
+            if (isset($_POST["AdminProfileId"]) AND $_POST["AdminProfileId"] == "1" && ($_POST['ProfileId'] == 1 || $_POST['ProfileId'] == 3) ) {
+
+                //Error handlers  
+                //Check if input characters are valid
+                if (preg_match('/^[\p{Greek}\s\d a-zA-Z]+$/u', $_POST['UserName'])
+                    && preg_match('/^[\p{Greek}\s\d a-zA-Z]+$/u', $_POST['FirstName'])
+                    && preg_match('/^[\p{Greek}\s\d a-zA-Z]+$/u', $_POST['LastName'])
+                    && !empty($_POST['ProfileId']) && !empty($_POST['AdminProfileId']) && !empty($_POST['Institution'])){
+                    
+                    $this->UserModel->registerUser($_POST["FirstName"],  $_POST["LastName"],   
+                        $_POST["UserName"], $_POST["ProfileId"], $_POST["AdminProfileId"], $_POST["Institution"]);
+                
+                } else {
+                    $_SESSION['g_message'] = 'There is an error. Please try again  '; 
+                }
+                header('location: ' . URL . 'home');      
+            
+            } else if (isset($_POST["AdminProfileId"]) AND $_POST["AdminProfileId"] == "2" && ($_POST['ProfileId'] == 1 || $_POST['ProfileId'] == 3)) {
+
+                //Error handlers  
+                //Check if input characters are valid
+                if (preg_match('/^[\p{Greek}\s\d a-zA-Z]+$/u', $_POST['UserName'])
+                    && preg_match('/^[\p{Greek}\s\d a-zA-Z]+$/u', $_POST['FirstName'])
+                    && preg_match('/^[\p{Greek}\s\d a-zA-Z]+$/u', $_POST['LastName'])
+                    && !empty($_POST['ProfileId']) && !empty($_POST['AdminProfileId']) && !empty($_POST['School'])){
+                    
+                    $this->UserModel->registerUser($_POST["FirstName"],  $_POST["LastName"],   
+                        $_POST["UserName"], $_POST["ProfileId"], $_POST["AdminProfileId"], $_POST["School"]);
+                
+                } else {
+                    $_SESSION['g_message'] = 'There is an error. Please try again  '; 
+                }
+                header('location: ' . URL . 'home');      
+            
+            } else if (isset($_POST["AdminProfileId"]) AND $_POST["AdminProfileId"] == "3" && ($_POST['ProfileId'] == 1 || $_POST['ProfileId'] == 3)) {
+
+                //Error handlers  
+                //Check if input characters are valid
+                if (preg_match('/^[\p{Greek}\s\d a-zA-Z]+$/u', $_POST['UserName'])
+                    && preg_match('/^[\p{Greek}\s\d a-zA-Z]+$/u', $_POST['FirstName'])
+                    && preg_match('/^[\p{Greek}\s\d a-zA-Z]+$/u', $_POST['LastName'])
+                    && !empty($_POST['ProfileId']) && !empty($_POST['AdminProfileId']) && !empty($_POST['Department'])){
+                    
+                    $this->UserModel->registerUser($_POST["FirstName"],  $_POST["LastName"],   
+                        $_POST["UserName"], $_POST["ProfileId"], $_POST["AdminProfileId"], $_POST["Department"]);
+                
+                } else {
+                    $_SESSION['g_message'] = 'There is an error. Please try again  '; 
+                }
+                header('location: ' . URL . 'home');      
+            
+            } else if (isset($_POST["AdminProfileId"]) AND $_POST["AdminProfileId"] == "4") {
+
+                //Error handlers  
+                //Check if input characters are valid
+                if (preg_match('/^[\p{Greek}\s\d a-zA-Z]+$/u', $_POST['UserName'])
+                    && preg_match('/^[\p{Greek}\s\d a-zA-Z]+$/u', $_POST['FirstName'])
+                    && preg_match('/^[\p{Greek}\s\d a-zA-Z]+$/u', $_POST['LastName'])   
+                    && !empty($_POST['ProfileId']) && !empty($_POST['AdminProfileId'])){
+                    
+                    $this->UserModel->registerUser($_POST["FirstName"],  $_POST["LastName"],   
+                        $_POST["UserName"], $_POST["ProfileId"], $_POST["AdminProfileId"], 0);
+                
+                } else {
+                    $_SESSION['g_message'] = 'There is an error. Please try again  '; 
+                }
+                header('location: ' . URL . 'home');         
+               
+            } else if (isset($_POST["ProfileId"]) && $_POST["ProfileId"] == "2" && !isset($_POST["AdminProfileId"])) {
+
+                //Error handlers   
+                //Check if input characters are valid
+                if (preg_match('/^[\p{Greek}\s\d a-zA-Z]+$/u', $_POST['UserName'])
+                    && preg_match('/^[\p{Greek}\s\d a-zA-Z]+$/u', $_POST['FirstName'])
+                    && preg_match('/^[\p{Greek}\s\d a-zA-Z]+$/u', $_POST['LastName'])
+                    && !empty($_POST['ProfileId'])){
+                    
+                    $this->UserModel->registerUser($_POST["FirstName"],  $_POST["LastName"],   
+                        $_POST["UserName"], $_POST["ProfileId"], 0, 0);
+                    
+                } else {
+                    $_SESSION['g_message'] = 'There is an error. Please try again  '; 
+                }  
+                header('location: ' . URL . 'home');
+
+            }else{
+                $_SESSION['g_message'] = 'There is an error. Please try again  '; 
+                header('location: ' . URL . 'home');
+
+            }  
+
+        } else {
+            //$_SESSION['g_message'] = 'There is an error. Please try again  '; 
+            header('location: ' . URL . 'error1');
         }
     }
 
